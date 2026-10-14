@@ -1,0 +1,2165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>THE AAC CASHFLOW SYSTEM</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg-primary: #908d9b;
+    --bg-secondary: #686387;
+    --bg-tertiary: #72716b;
+    --text-primary: #1a1a18;
+    --teal-light: #360c8b;
+    --coral: #993C1D;
+    --coral-light: #FAECE7;
+    --blue: #185FA5;
+    --blue-light: #E6F1FB;
+    --amber: #854F0B;
+    --amber-light: #FAEEDA;
+    --pink: #993556;
+    --pink-light: #FBEAF0;
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    min-height: 100vh;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+
+  /* Layout */
+  .app-shell { display: none; min-height: 100vh; }
+  .app-shell.visible { display: flex; }
+
+  /* Login screen */
+  .login-screen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: var(--bg-tertiary);
+  }
+  .login-box {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    padding: 2.5rem 2.25rem;
+    width: 360px;
+    max-width: 90vw;
+    box-shadow: 0 10px 40px rgba(0,0,0,.25);
+  }
+  .login-logo {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 1.75rem;
+  }
+  .login-logo .logo-icon {
+    width: 38px; height: 38px; border-radius: var(--radius-md);
+    background: #534AB7; display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 18px;
+  }
+  .login-title { font-size: 15px; font-weight: 600; }
+  .login-sub { font-size: 12px; color: var(--text-secondary, #555); }
+  .login-error {
+    display: none; background: var(--coral-light); color: var(--coral);
+    font-size: 12.5px; padding: 8px 10px; border-radius: var(--radius-sm);
+    margin-bottom: .9rem;
+  }
+  .login-error.show { display: block; }
+  .login-field { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 5px; }
+  .login-field label { font-size: 12px; font-weight: 500; color: var(--text-secondary,#444); }
+  .login-field input, .login-field select {
+    font-size: 13.5px; padding: 9px 11px; border-radius: var(--radius-md);
+    border: 0.5px solid rgba(0,0,0,.2); background: #fff; outline: none;
+    font-family: inherit;
+  }
+  .login-field input:focus, .login-field select:focus { border-color: #534AB7; box-shadow: 0 0 0 3px rgba(83,74,183,.15); }
+  .login-btn {
+    width: 100%; padding: 10px; margin-top: .5rem;
+    background: #534AB7; color: #fff; border: none; border-radius: var(--radius-md);
+    font-size: 13.5px; font-weight: 500; cursor: pointer;
+  }
+  .login-btn:hover { background: #443c99; }
+  .login-btn:disabled { opacity: .6; cursor: default; }
+  .login-server {
+    margin-top: 1.25rem; padding-top: 1rem; border-top: 0.5px solid rgba(0,0,0,.12);
+    font-size: 11.5px; color: var(--text-secondary,#666);
+  }
+  .login-server input {
+    width: 100%; font-size: 12px; padding: 6px 8px; margin-top: 4px;
+    border-radius: var(--radius-sm); border: 0.5px solid rgba(0,0,0,.2);
+  }
+
+  /* Sidebar */
+  .sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: var(--bg-primary);
+    border-right: 0.5px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    position: fixed;
+    top: 0; left: 0; bottom: 0;
+    z-index: 10;
+  }
+  .sidebar-header {
+    padding: 1.25rem 1rem 1rem;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .sidebar-logo {
+    display: flex; align-items: center; gap: 10px;
+  }
+  .logo-icon {
+    width: 34px; height: 34px;
+    background: var(--purple);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-size: 16px;
+  }
+  .logo-text { font-size: 14px; font-weight: 600; line-height: 1.2; }
+  .logo-sub { font-size: 11px; color: var(--text-secondary); }
+  .sidebar-nav { padding: .5rem 0; flex: 1; }
+  .nav-section-label {
+    font-size: 10px; font-weight: 600; letter-spacing: .08em;
+    color: var(--text-secondary); text-transform: uppercase;
+    padding: 1rem 1rem .4rem;
+  }
+  .nav-item {
+    display: flex; align-items: center; gap: 9px;
+    padding: 8px 1rem; font-size: 13.5px; cursor: pointer;
+    color: var(--text-secondary);
+    border-left: 3px solid transparent;
+    transition: all .12s; user-select: none;
+  }
+  .nav-item:hover { background: var(--bg-secondary); color: var(--text-primary); }
+  .nav-item.active {
+    background: var(--purple-light); color: var(--purple);
+    border-left-color: var(--purple); font-weight: 500;
+  }
+  .nav-item i { font-size: 17px; }
+  .sidebar-footer {
+    padding: .75rem 1rem;
+    border-top: 0.5px solid var(--border);
+    font-size: 12px; color: var(--text-secondary);
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .logout-link { cursor: pointer; color: var(--coral); }
+  .logout-link:hover { text-decoration: underline; }
+
+  /* Main content */
+  .main-content {
+    margin-left: 220px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+  .topbar {
+    background: var(--bg-primary);
+    border-bottom: 0.5px solid var(--border);
+    padding: .75rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    position: sticky; top: 0; z-index: 5;
+  }
+  .topbar-title { font-size: 16px; font-weight: 500; display: flex; align-items: center; gap: 8px; }
+  .topbar-title i { font-size: 18px; color: var(--purple); }
+  .topbar-right { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--text-secondary); }
+  .page-body { padding: 1.5rem; flex: 1; }
+
+  /* Pages */
+  .page { display: none; }
+  .page.active { display: block; }
+
+  /* Metric cards */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px,1fr)); gap: 10px; margin-bottom: 1.5rem; }
+  .hero-metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 14px; margin-bottom: 1.25rem; }
+  .hero-metric {
+    border-radius: var(--radius-lg);
+    padding: 1.35rem 1.5rem;
+    display: flex; flex-direction: column; gap: 8px;
+    color: #fff;
+  }
+  .hero-metric-label { font-size: 13px; font-weight: 500; opacity: .9; display: flex; align-items: center; gap: 7px; }
+  .hero-metric-value { font-size: 30px; font-weight: 700; line-height: 1.1; }
+  .hero-metric.balance { background: linear-gradient(135deg, #534AB7, #3d3591); }
+  .hero-metric.income { background: linear-gradient(135deg, #0F6E56, #0a5440); }
+  .hero-metric.expense { background: linear-gradient(135deg, #993C1D, #7a2e14); }
+  .metric {
+    background: var(--bg-secondary); border-radius: var(--radius-md);
+    padding: 1rem; display: flex; flex-direction: column; gap: 5px;
+  }
+  .metric-label { font-size: 12px; color: var(--text-secondary); display: flex; align-items: center; gap: 5px; }
+  .metric-label i { font-size: 14px; }
+  .metric-value { font-size: 22px; font-weight: 600; line-height: 1; }
+  .metric-value.green { color: var(--teal); }
+  .metric-value.red { color: var(--coral); }
+  .metric-value.purple { color: var(--purple); }
+  .metric-value.blue { color: var(--blue); }
+
+  /* Cards */
+  .card {
+    background: var(--bg-primary);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .card-title { font-size: 14px; font-weight: 500; margin-bottom: 1rem; display: flex; align-items: center; gap: 7px; }
+  .card-title i { font-size: 16px; color: var(--purple); }
+  .card-flush { padding: 0; overflow: hidden; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px; font-size: 13px;
+    border: 0.5px solid var(--border-hover);
+    border-radius: var(--radius-md);
+    background: transparent; color: var(--text-primary);
+    cursor: pointer; font-family: inherit;
+    transition: all .12s;
+  }
+  .btn:hover { background: var(--bg-secondary); }
+  .btn.primary { background: var(--purple); color: #fff; border-color: var(--purple); }
+  .btn.primary:hover { background: var(--purple-dark); }
+  .btn.danger { background: var(--coral); color: #fff; border-color: var(--coral); }
+  .btn.danger:hover { background: #7a2e14; }
+  .btn.sm { padding: 4px 9px; font-size: 12px; }
+  .btn-row { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+
+  /* Tables */
+  .table-wrap { overflow-x: auto; border-radius: var(--radius-lg); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th {
+    text-align: left; padding: 10px 12px;
+    border-bottom: 0.5px solid var(--border);
+    color: var(--text-secondary); font-weight: 500;
+    background: var(--bg-secondary); font-size: 12px;
+    text-transform: uppercase; letter-spacing: .04em;
+  }
+  td { padding: 10px 12px; border-bottom: 0.5px solid var(--border); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tbody tr:hover td { background: var(--bg-secondary); }
+
+  /* Badges */
+  .badge {
+    display: inline-block; font-size: 11px;
+    padding: 2px 8px; border-radius: 20px; font-weight: 500;
+  }
+  .badge.giving { background: var(--purple-light); color: var(--purple); }
+  .badge.fundraising { background: var(--blue-light); color: var(--blue); }
+  .badge.expense { background: var(--coral-light); color: var(--coral); }
+  .badge.active { background: var(--teal-light); color: var(--teal); }
+  .badge.inactive { background: var(--bg-secondary); color: var(--text-secondary); }
+  .role-badge {
+    display: inline-block; font-size: 11px;
+    padding: 2px 8px; border-radius: 20px; font-weight: 500;
+  }
+  .role-Bishop { background: var(--pink-light); color: var(--pink); }
+  .role-Treasurer { background: var(--amber-light); color: var(--amber); }
+  .role-Admin { background: var(--blue-light); color: var(--blue); }
+
+  /* Form */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group.full { grid-column: span 2; }
+  .form-group label { font-size: 12px; color: var(--text-secondary); font-weight: 500; }
+  .form-group input, .form-group select, .form-group textarea {
+    font-size: 13px; font-family: inherit;
+    padding: 7px 10px;
+    border: 0.5px solid var(--border-hover);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color .12s;
+  }
+  .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: var(--purple);
+    box-shadow: 0 0 0 3px rgba(83,74,183,.12);
+  }
+  .form-group textarea { min-height: 72px; resize: vertical; }
+  .search-input {
+    padding: 7px 10px; font-size: 13px;
+    border: 0.5px solid var(--border-hover);
+    border-radius: var(--radius-md);
+    background: var(--bg-primary); color: var(--text-primary);
+    font-family: inherit; outline: none;
+    transition: border-color .12s;
+  }
+  .search-input:focus { border-color: var(--purple); }
+
+  /* Avatar */
+  .avatar {
+    width: 32px; height: 32px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px; font-weight: 600;
+    background: var(--purple-light); color: var(--purple);
+    flex-shrink: 0;
+  }
+  .row-flex { display: flex; align-items: center; gap: 9px; }
+
+  /* Fund bar */
+  .fund-bar { height: 7px; border-radius: 4px; background: var(--bg-tertiary); overflow: hidden; margin-top: 5px; }
+  .fund-fill { height: 100%; border-radius: 4px; transition: width .3s; }
+  .progress-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-secondary); margin-bottom: 2px; }
+
+  /* Tabs */
+  .tab-row {
+    display: flex; gap: 0;
+    border-bottom: 0.5px solid var(--border);
+    margin-bottom: 1.25rem;
+  }
+  .tab {
+    padding: 8px 16px; font-size: 13px; cursor: pointer;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent; margin-bottom: -0.5px;
+    transition: all .12s;
+  }
+  .tab:hover { color: var(--text-primary); }
+  .tab.active { color: var(--purple); border-bottom-color: var(--purple); font-weight: 500; }
+
+  /* Grid layouts */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .funds-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 1rem; }
+
+  .fund-card {
+    background: var(--bg-primary);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem 1.2rem;
+  }
+  .fund-card-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: .4rem; }
+  .fund-card-name { font-size: 14px; font-weight: 500; }
+  .fund-card-desc { font-size: 12px; color: var(--text-secondary); margin-bottom: .75rem; }
+  .fund-card-amount { font-size: 22px; font-weight: 600; margin-bottom: .2rem; }
+  .fund-card-sub { font-size: 11px; color: var(--text-secondary); margin-bottom: .5rem; }
+
+  /* Modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,.45); z-index: 100;
+    align-items: center; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--bg-primary);
+    border-radius: var(--radius-lg);
+    border: 0.5px solid var(--border);
+    padding: 1.5rem; width: 480px;
+    max-width: 95vw; max-height: 88vh;
+    overflow-y: auto; position: relative;
+  }
+  .modal-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 1.25rem;
+  }
+  .modal-header h3 { font-size: 16px; font-weight: 500; }
+  .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 1.25rem; padding-top: 1rem; border-top: 0.5px solid var(--border); }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 1.5rem; right: 1.5rem;
+    background: var(--purple); color: #fff;
+    padding: 10px 18px; border-radius: var(--radius-md);
+    font-size: 13px; z-index: 200;
+    opacity: 0; transition: opacity .3s;
+    pointer-events: none; box-shadow: 0 4px 16px rgba(83,74,183,.3);
+  }
+  .toast.show { opacity: 1; }
+  .toast.error { background: var(--coral); }
+
+  /* Legend */
+  .pie-legend { display: flex; flex-direction: column; gap: 9px; margin-top: 1rem; }
+  .legend-item { display: flex; align-items: center; gap: 9px; font-size: 13px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center; padding: 2.5rem 1rem;
+    color: var(--text-secondary); font-size: 13px;
+  }
+  .empty-state i { font-size: 36px; display: block; margin-bottom: .5rem; opacity: .4; }
+
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .main-content { margin-left: 0; }
+    .two-col, .form-grid { grid-template-columns: 1fr; }
+    .form-group.full { grid-column: span 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ─────────────────────────────────────── -->
+<div class="login-screen" id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="logo-icon"><i class="ti ti-building-church"></i></div>
+      <div>
+        <div class="login-title">AAC Finance</div>
+        <div class="login-sub">Sign in to continue</div>
+      </div>
+    </div>
+    <div class="login-error" id="login-error"></div>
+    <div class="login-field">
+      <label>Role</label>
+      <select id="login-role">
+        <option value="Admin">Admin</option>
+        <option value="Treasurer">Treasurer</option>
+        <option value="Bishop">Bishop</option>
+      </select>
+    </div>
+    <div class="login-field" id="login-province-field">
+      <label>Province code <span style="font-weight:400;color:var(--text-secondary,#666)">(not needed for Admin)</span></label>
+      <input type="text" id="login-province-code" placeholder="e.g. HAR" maxlength="10" style="text-transform:uppercase">
+    </div>
+    <div class="login-field">
+      <label>Username</label>
+      <input type="text" id="login-username" placeholder="e.g. admin" autocomplete="username">
+    </div>
+    <div class="login-field">
+      <label>Password</label>
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="login-btn" id="login-btn" onclick="doLogin()">Sign in</button>
+    <div class="login-server">
+      API server address (only change this if your server isn't on this computer):
+      <input type="text" id="api-base-input" value="http://localhost:4000/api">
+    </div>
+  </div>
+</div>
+
+<div class="app-shell" id="app-shell">
+
+  <!-- Sidebar -->
+  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">
+        <div class="logo-icon"><i class="ti ti-building-church"></i></div>
+        <div>
+          <div class="logo-text">AAC Finance</div>
+          <div class="logo-sub">Management System</div>
+        </div>
+      </div>
+    </div>
+    <div class="sidebar-nav">
+      <div class="nav-section-label">Overview</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)">
+        <i class="ti ti-layout-dashboard"></i> Dashboard
+      </div>
+      <div class="nav-section-label">Finance</div>
+      <div class="nav-item" onclick="showPage('transactions',this)">
+        <i class="ti ti-arrows-exchange"></i> Transactions
+      </div>
+      <div class="nav-item" onclick="showPage('funds',this)">
+        <i class="ti ti-wallet"></i> Funds
+      </div>
+      <div class="nav-section-label" id="nav-section-province">province</div>
+      <div class="nav-item" id="nav-provinces" onclick="showPage('provinces',this)">
+        <i class="ti ti-building-bank"></i> Provinces
+      </div>
+      <div class="nav-item" id="nav-accounts" onclick="showPage('accounts',this)">
+        <i class="ti ti-shield-lock"></i> User accounts
+      </div>
+      <div class="nav-section-label" id="nav-section-analytics">Analytics</div>
+      <div class="nav-item" id="nav-reports" onclick="showPage('reports',this)">
+        <i class="ti ti-chart-bar"></i> Reports
+      </div>
+      <div class="nav-item" id="nav-audit-log" onclick="showPage('auditlog',this)">
+        <i class="ti ti-history"></i> Audit Log
+      </div>
+      <div class="nav-section-label">Account</div>
+      <div class="nav-item" onclick="showPage('profile',this)">
+        <i class="ti ti-user-circle"></i> My Profile
+      </div>
+      <div class="nav-item" onclick="showPage('settings',this)">
+        <i class="ti ti-settings"></i> Settings
+      </div>
+      <div class="nav-item" onclick="showPage('help',this)">
+        <i class="ti ti-help-circle"></i> Help
+      </div>
+      <div class="nav-item" onclick="doLogout()">
+        <i class="ti ti-logout"></i> Logout
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div><i class="ti ti-calendar" style="vertical-align:-2px"></i> <span id="sidebar-date"></span></div>
+      <div>Signed in as <strong id="sidebar-username"></strong></div>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <div class="main-content">
+    <header class="topbar">
+      <div class="topbar-title" id="topbar-title">
+        <i class="ti ti-layout-dashboard"></i> Dashboard
+      </div>
+      <div class="topbar-right">
+        <i class="ti ti-bell"></i>
+        <span id="topbar-user">Welcome back</span>
+      </div>
+    </header>
+
+    <main class="page-body">
+
+      <!-- DASHBOARD -->
+      <div class="page active" id="page-dashboard">
+        <div class="hero-metric-grid" id="dash-hero-metrics"></div>
+        <div class="metric-grid" id="dash-metrics"></div>
+        <div class="two-col">
+          <div class="card card-flush">
+            <div style="padding:1.25rem 1.25rem .75rem" class="card-title">
+              <i class="ti ti-clock"></i> Recent transactions
+            </div>
+            <table id="dash-recent-table">
+              <thead><tr><th>Date</th><th>Description</th><th>Type</th><th>Amount</th></tr></thead>
+              <tbody id="dash-recent-body"></tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-wallet"></i> Fund balances</div>
+            <div id="dash-funds-list"></div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title"><i class="ti ti-building-bank"></i> Recent provinces</div>
+            <div id="dash-provinces-list"></div>
+          </div>
+          <div class="card">
+            <div class="card-title"><i class="ti ti-shield-lock"></i> Active accounts</div>
+            <div id="dash-accounts-list"></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="justify-content:space-between">
+            <span><i class="ti ti-calendar-event"></i> Upcoming events</span>
+            <button class="btn sm primary" onclick="openModal('event-modal')">
+              <i class="ti ti-plus"></i> Add event
+            </button>
+          </div>
+          <div id="dash-events-list"></div>
+        </div>
+      </div>
+
+      <!-- TRANSACTIONS -->
+      <div class="page" id="page-transactions">
+        <div class="btn-row">
+          <button class="btn primary" id="btn-add-tx" onclick="openAddTx()">
+            <i class="ti ti-plus"></i> Add transaction
+          </button>
+          <input class="search-input" id="tx-search" placeholder="Search..." style="width:180px" oninput="renderTransactions()">
+          <select class="search-input" id="tx-type-filter" style="width:140px" onchange="renderTransactions()">
+            <option value="">All types</option>
+            <option>Giving</option><option>Fundraising</option>
+            <option>Expense</option>
+          </select>
+          <select class="search-input" id="tx-fund-filter" style="width:150px" onchange="renderTransactions()">
+            <option value="">All funds</option>
+          </select>
+        </div>
+        <div class="card card-flush table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Transaction Date</th><th>Recorded At</th><th>Description</th><th>Type</th>
+                <th>Fund</th><th>Amount</th><th>Province</th><th>Recorded By</th><th></th><th></th>
+              </tr>
+            </thead>
+            <tbody id="tx-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- FUNDS -->
+      <div class="page" id="page-funds">
+        <div class="btn-row">
+          <button class="btn primary" id="btn-add-fund" onclick="openAddFund()">
+            <i class="ti ti-plus"></i> Add fund
+          </button>
+        </div>
+        <div class="funds-grid" id="funds-grid"></div>
+      </div>
+
+      <!-- PROVINCES -->
+      <div class="page" id="page-provinces">
+        <div class="btn-row">
+          <button class="btn primary" id="btn-add-province" onclick="openAddProvince()">
+            <i class="ti ti-plus"></i> Add province
+          </button>
+          <input class="search-input" id="prov-search" placeholder="Search provinces..." style="width:200px" oninput="renderProvinces()">
+        </div>
+        <div class="card card-flush table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Province Name</th><th>Code</th><th>Total Given</th><th>Target</th>
+                <th>% Achieved</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="provinces-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ACCOUNTS -->
+      <div class="page" id="page-accounts">
+        <div class="btn-row">
+          <button class="btn primary" onclick="openModal('account-modal')">
+            <i class="ti ti-plus"></i> Add account
+          </button>
+        </div>
+        <div class="card card-flush table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th><th>Username</th><th>Role</th><th>Province</th>
+                <th>Fund access</th><th>Status</th><th></th>
+              </tr>
+            </thead>
+            <tbody id="accounts-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- REPORTS -->
+      <div class="page" id="page-reports">
+        <div class="tab-row">
+          <div class="tab active" onclick="showReportTab('summary',this)">Summary</div>
+          <div class="tab" onclick="showReportTab('contributions',this)">Contributions</div>
+          <div class="tab" onclick="showReportTab('expenses',this)">Expenses</div>
+        </div>
+
+        <div id="report-summary">
+          <div class="metric-grid" id="rep-metrics"></div>
+          <div class="two-col">
+            <div class="card">
+              <div class="card-title"><i class="ti ti-chart-donut"></i> Income breakdown</div>
+              <canvas id="rep-chart" height="200"></canvas>
+              <div class="pie-legend" id="rep-legend"></div>
+            </div>
+            <div class="card">
+              <div class="card-title"><i class="ti ti-wallet"></i> Fund allocation</div>
+              <div id="rep-funds-list"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="report-contributions" style="display:none">
+          <div class="card card-flush table-wrap">
+            <table>
+              <thead>
+                <tr><th>Province</th><th>Giving</th><th>Fundraising</th><th>Total</th></tr>
+              </thead>
+              <tbody id="contrib-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div id="report-expenses" style="display:none">
+          <div class="card card-flush table-wrap">
+            <table>
+              <thead>
+                <tr><th>Date</th><th>Description</th><th>Fund</th><th>Amount</th><th>Approved by</th><th>Notes</th></tr>
+              </thead>
+              <tbody id="exp-body"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- AUDIT LOG -->
+      <div class="page" id="page-auditlog">
+        <div class="btn-row">
+          <input class="search-input" id="audit-search" placeholder="Search actions, users, details..." style="width:260px" oninput="renderAuditLog()">
+        </div>
+        <div class="card card-flush table-wrap">
+          <table>
+            <thead>
+              <tr><th>When</th><th>Who</th><th>Action</th><th>Details</th></tr>
+            </thead>
+            <tbody id="auditlog-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- MY PROFILE -->
+      <div class="page" id="page-profile">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-user-circle"></i> My account</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-bottom:1rem">
+            Signed in as <strong id="profile-name"></strong> (<span id="profile-role"></span><span id="profile-province"></span>)
+          </div>
+          <div id="settings-pw-error" class="login-error"></div>
+          <div class="form-group" style="margin-bottom:10px">
+            <label>Current password</label>
+            <input type="password" id="settings-current-pw">
+          </div>
+          <div class="form-group" style="margin-bottom:10px">
+            <label>New password (min 6 characters)</label>
+            <input type="password" id="settings-new-pw">
+          </div>
+          <div class="form-group" style="margin-bottom:14px">
+            <label>Confirm new password</label>
+            <input type="password" id="settings-confirm-pw">
+          </div>
+          <button class="btn primary" onclick="changeMyPassword()"><i class="ti ti-lock"></i> Update password</button>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="page" id="page-settings">
+        <div class="two-col">
+          <div class="card" id="settings-org-card">
+            <div class="card-title"><i class="ti ti-building"></i> Organization settings</div>
+            <div class="form-group" style="margin-bottom:10px">
+              <label>Organization name (shown in sidebar)</label>
+              <input type="text" id="settings-org-name">
+            </div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label>Currency symbol</label>
+              <input type="text" id="settings-currency" style="width:80px">
+            </div>
+            <button class="btn primary" onclick="saveOrgSettings()"><i class="ti ti-check"></i> Save organization settings</button>
+          </div>
+
+          <div class="card">
+            <div class="card-title"><i class="ti ti-file-export"></i> Export data</div>
+            <div style="font-size:13px;color:var(--text-secondary);margin-bottom:1rem">
+              Download a spreadsheet-friendly copy of all transactions currently visible to you.
+            </div>
+            <button class="btn" onclick="exportTransactionsCSV()"><i class="ti ti-download"></i> Export transactions as CSV</button>
+          </div>
+        </div>
+
+        <div class="card" id="settings-system-card">
+          <div class="card-title"><i class="ti ti-server-cog"></i> System &gt; Backup &amp; Recovery</div>
+          <div style="font-size:13px;color:var(--text-secondary);margin-bottom:1rem">
+            Download a full backup of funds, provinces, transactions, and events — or restore from
+            a previously downloaded backup file. User accounts and passwords are never included,
+            for safety. Restoring replaces all current data with the contents of the file.
+          </div>
+          <div class="btn-row" style="margin-bottom:0">
+            <button class="btn" onclick="downloadBackup()"><i class="ti ti-cloud-download"></i> Download backup</button>
+            <input type="file" id="restore-file-input" accept="application/json" style="display:none" onchange="restoreBackup(event)">
+            <button class="btn danger" onclick="document.getElementById('restore-file-input').click()"><i class="ti ti-cloud-upload"></i> Restore from backup file</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- HELP -->
+      <div class="page" id="page-help">
+        <div class="card">
+          <div class="card-title"><i class="ti ti-help-circle"></i> Getting started</div>
+          <p style="font-size:13px;line-height:1.7;margin-bottom:.75rem">
+            <strong>Dashboard</strong> gives you an overview of totals, recent activity, and fund balances.
+          </p>
+          <p style="font-size:13px;line-height:1.7;margin-bottom:.75rem">
+            <strong>Transactions</strong> is where giving, fundraising, and expenses are recorded.
+            Click "Add transaction", fill in the details, and save.
+          </p>
+          <p style="font-size:13px;line-height:1.7;margin-bottom:.75rem">
+            <strong>Funds</strong> tracks money by purpose (e.g. Building Fund, Missions Fund) — each fund's
+            balance updates automatically from the transactions tagged to it.
+          </p>
+          <p style="font-size:13px;line-height:1.7;margin-bottom:.75rem">
+            <strong>Provinces</strong> and <strong>Reports</strong> are visible to Admins and Bishops, showing
+            contributions and summaries across the organization.
+          </p>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-shield-lock"></i> What can my role do?</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Feature</th><th>Admin</th><th>Treasurer</th><th>Bishop</th></tr></thead>
+              <tbody>
+                <tr><td>Dashboard</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Add / delete transactions</td><td>✅</td><td>✅</td><td>View only</td></tr>
+                <tr><td>Add / edit funds</td><td>✅</td><td>✅</td><td>View only</td></tr>
+                <tr><td>Delete funds</td><td>✅</td><td>—</td><td>—</td></tr>
+                <tr><td>Provinces</td><td>✅</td><td>View only</td><td>View only</td></tr>
+                <tr><td>Reports</td><td>✅</td><td>✅</td><td>✅</td></tr>
+                <tr><td>Audit Log</td><td>✅</td><td>—</td><td>✅</td></tr>
+                <tr><td>User accounts</td><td>✅</td><td>—</td><td>—</td></tr>
+                <tr><td>Backup &amp; Recovery</td><td>✅</td><td>—</td><td>—</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><i class="ti ti-message-circle"></i> Something not working?</div>
+          <p style="font-size:13px;line-height:1.7">
+            If a page won't load or shows an error, check that your administrator's server is running.
+            If a save fails, a red message will appear at the bottom-right of the screen explaining why —
+            for most errors, that message tells you exactly what to fix (e.g. a missing field or an
+            expired session, in which case simply sign in again).
+          </p>
+        </div>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- MODALS -->
+
+<!-- Transaction modal -->
+<div class="modal-overlay" id="tx-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="tx-modal-title"><i class="ti ti-plus" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Add transaction</h3>
+      <button class="btn sm" onclick="closeModal('tx-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="tx-date">
+      </div>
+      <div class="form-group">
+        <label>Type</label>
+        <select id="tx-type">
+          <option>Giving</option><option>Fundraising</option>
+          <option>Expense</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Description</label>
+        <input type="text" id="tx-desc" placeholder="e.g. Sunday morning giving">
+      </div>
+      <div class="form-group">
+        <label>Amount (USD)</label>
+        <input type="number" id="tx-amount" placeholder="0.00" min="0" step="0.01">
+      </div>
+      <div class="form-group">
+        <label>Fund</label>
+        <select id="tx-fund"></select>
+      </div>
+      <div class="form-group">
+        <label>Province </label>
+        <select id="tx-province"></select>
+      </div>
+      <div class="form-group">
+        <label>Recorded by</label>
+        <input type="text" id="tx-by" disabled>
+      </div>
+      <div class="form-group full">
+        <label>Notes (optional)</label>
+        <textarea id="tx-notes" placeholder="Any additional notes..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('tx-modal')">Cancel</button>
+      <button class="btn primary" onclick="saveTx()"><i class="ti ti-check"></i> Save transaction</button>
+    </div>
+  </div>
+</div>
+
+<!-- Fund modal -->
+<div class="modal-overlay" id="fund-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="fund-modal-title"><i class="ti ti-wallet" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Add fund</h3>
+      <button class="btn sm" onclick="closeModal('fund-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Fund name</label>
+        <input type="text" id="fund-name" placeholder="e.g. Building Fund">
+      </div>
+      <div class="form-group">
+        <label>Target amount (USD)</label>
+        <input type="number" id="fund-target" placeholder="0.00" min="0">
+      </div>
+      <div class="form-group">
+        <label>Color accent</label>
+        <select id="fund-color">
+          <option value="#534AB7">Purple</option>
+          <option value="#0F6E56">Teal</option>
+          <option value="#185FA5">Blue</option>
+          <option value="#993C1D">Coral</option>
+          <option value="#854F0B">Amber</option>
+          <option value="#3B6D11">Green</option>
+          <option value="#993556">Pink</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Description</label>
+        <textarea id="fund-desc" placeholder="Purpose of this fund..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('fund-modal')">Cancel</button>
+      <button class="btn primary" onclick="saveFund()"><i class="ti ti-check"></i> Save fund</button>
+    </div>
+  </div>
+</div>
+
+<!-- Province modal -->
+<div class="modal-overlay" id="province-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3 id="province-modal-title"><i class="ti ti-map-plus" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Add province</h3>
+      <button class="btn sm" onclick="closeModal('province-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>province name</label>
+        <input type="text" id="prov-name" placeholder="Harare Province">
+      </div>
+      <div class="form-group">
+        <label>Province code (for login)</label>
+        <input type="text" id="prov-code" placeholder="e.g. HAR" maxlength="10" style="text-transform:uppercase">
+      </div>
+      <div class="form-group">
+        <label>Target amount $</label>
+        <input type="number" id="province-target" placeholder="0000">
+      </div>
+      <div class="form-group full">
+        <label>Province treasurer </label>
+        <input type="text" id="province-treasurer" placeholder="Rev R...">
+      </div>
+      </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('province-modal')">Cancel</button>
+      <button class="btn primary" onclick="saveProvince()"><i class="ti ti-check"></i> Save province</button>
+    </div>
+  </div>
+</div>
+
+<!-- Account modal -->
+<div class="modal-overlay" id="account-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="ti ti-user-shield" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Add user account</h3>
+      <button class="btn sm" onclick="closeModal('account-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label>Full name</label>
+        <input type="text" id="acc-name" placeholder="Pastor John">
+      </div>
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" id="acc-user" placeholder="johnsmith">
+      </div>
+      <div class="form-group">
+        <label>Role</label>
+        <select id="acc-role" onchange="toggleAccProvinceField()">
+          <option>Bishop</option>
+          <option>Treasurer</option>
+          <option>Admin</option>
+        </select>
+      </div>
+      <div class="form-group" id="acc-province-field">
+        <label>Province (used for login province code)</label>
+        <select id="acc-province"></select>
+      </div>
+      <div class="form-group">
+        <label>Fund access</label>
+        <select id="acc-fund">
+          <option value="All">All funds</option>
+        </select>
+      </div>
+      <div class="form-group full">
+        <label>Password</label>
+        <input type="password" id="acc-pass" placeholder="Set a password (min 6 chars)">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('account-modal')">Cancel</button>
+      <button class="btn primary" onclick="saveAccount()"><i class="ti ti-check"></i> Create account</button>
+    </div>
+  </div>
+</div>
+
+<!-- Event modal -->
+<!-- Transaction history modal -->
+<div class="modal-overlay" id="tx-history-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="ti ti-history" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Transaction history</h3>
+      <button class="btn sm" onclick="closeModal('tx-history-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div id="tx-history-body" style="font-size:13px;line-height:1.6;max-height:50vh;overflow-y:auto"></div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('tx-history-modal')">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="event-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="ti ti-calendar-event" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Add event</h3>
+      <button class="btn sm" onclick="closeModal('event-modal')"><i class="ti ti-x"></i></button>
+    </div>
+    <div class="form-grid">
+      <div class="form-group full">
+        <label>Event title</label>
+        <input type="text" id="event-title" placeholder="e.g. Youth Conference">
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" id="event-date">
+      </div>
+      <div class="form-group">
+        <label>Time (optional)</label>
+        <input type="text" id="event-time" placeholder="e.g. 6:00 PM">
+      </div>
+      <div class="form-group full">
+        <label>Location (optional)</label>
+        <input type="text" id="event-location" placeholder="e.g. Main Sanctuary">
+      </div>
+      <div class="form-group full">
+        <label>Notes (optional)</label>
+        <textarea id="event-description" placeholder="Any additional details..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeModal('event-modal')">Cancel</button>
+      <button class="btn primary" onclick="saveEvent()"><i class="ti ti-check"></i> Save event</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// API CONNECTION LAYER
+// ═══════════════════════════════════════════════════════════
+let API_BASE = localStorage.getItem('aac_api_base') || 'http://localhost:4000/api';
+let authToken = localStorage.getItem('aac_token') || null;
+let currentUser = JSON.parse(localStorage.getItem('aac_user') || 'null');
+
+// Local cache of the last data fetched from the server, so table renders
+// (search/filter) don't need to re-hit the network on every keystroke.
+let cache = { funds: [], provinces: [], accounts: [], transactions: [] };
+
+async function api(path, options = {}) {
+  const res = await fetch(API_BASE + path, {
+    ...options,
+    headers: {
+      'Content-Type': 'application/json',
+      ...(authToken ? { Authorization: 'Bearer ' + authToken } : {}),
+      ...(options.headers || {}),
+    },
+  });
+
+  if (res.status === 401) {
+    // Token expired or invalid — send back to login
+    doLogout();
+    throw new Error('Session expired. Please sign in again.');
+  }
+
+  let data = null;
+  try { data = await res.json(); } catch (e) { /* no body, e.g. 204 */ }
+
+  if (!res.ok) {
+    const message = (data && (data.error || (data.errors && data.errors[0]?.msg))) || `Request failed (${res.status})`;
+    throw new Error(message);
+  }
+  return data;
+}
+
+// ── Login / logout ─────────────────────────────────────────
+async function doLogin() {
+  const username = document.getElementById('login-username').value.trim();
+  const password = document.getElementById('login-password').value;
+  const role = document.getElementById('login-role').value;
+  const provinceCode = document.getElementById('login-province-code').value.trim();
+  const apiBaseInput = document.getElementById('api-base-input').value.trim();
+  const errBox = document.getElementById('login-error');
+  const btn = document.getElementById('login-btn');
+
+  errBox.classList.remove('show');
+
+  if (!username || !password) {
+    errBox.textContent = 'Please enter both username and password.';
+    errBox.classList.add('show');
+    return;
+  }
+  if (role !== 'Admin' && !provinceCode) {
+    errBox.textContent = 'Please enter your province code.';
+    errBox.classList.add('show');
+    return;
+  }
+
+  API_BASE = apiBaseInput || API_BASE;
+
+  btn.disabled = true;
+  btn.textContent = 'Signing in...';
+
+  try {
+    const data = await api('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ username, password, role, provinceCode }),
+    });
+    authToken = data.token;
+    currentUser = data.user;
+    localStorage.setItem('aac_token', authToken);
+    localStorage.setItem('aac_user', JSON.stringify(currentUser));
+    localStorage.setItem('aac_api_base', API_BASE);
+    enterApp();
+  } catch (err) {
+    errBox.textContent = err.message || 'Could not sign in. Check your username, password, and that the server is running.';
+    errBox.classList.add('show');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Sign in';
+  }
+}
+
+function doLogout() {
+  authToken = null;
+  currentUser = null;
+  localStorage.removeItem('aac_token');
+  localStorage.removeItem('aac_user');
+  document.getElementById('app-shell').classList.remove('visible');
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-password').value = '';
+}
+
+function enterApp() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-shell').classList.add('visible');
+  document.getElementById('sidebar-username').textContent = currentUser.name + ' (' + currentUser.role + ')';
+  applyRolePermissions();
+  loadOrgName();
+  showPage('dashboard', document.querySelector('.nav-item'));
+}
+
+async function loadOrgName() {
+  try {
+    const settings = await api('/settings');
+    if (settings.org_name) document.querySelector('.logo-text').textContent = settings.org_name;
+  } catch (err) {
+    // Non-critical — just keep the default name if this fails
+  }
+}
+
+// ── Role-based visibility ────────────────────────────────────
+// Admin      → full access to everything
+// Treasurer  → dashboard, transactions (add/view), funds (add/view),
+//              provinces (view only), reports (view) — no accounts, no audit log
+// Bishop     → view everything except accounts; cannot add/edit/delete
+function canManageTransactions() { return currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Treasurer'); }
+function canManageFunds()        { return currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Treasurer'); }
+function canDeleteFund()         { return currentUser && currentUser.role === 'Admin'; }
+function canViewProvinces()      { return currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Bishop' || currentUser.role === 'Treasurer'); }
+function canManageProvinces()    { return currentUser && currentUser.role === 'Admin'; }
+function canViewReports()        { return currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Bishop' || currentUser.role === 'Treasurer'); }
+function canViewAuditLog()       { return currentUser && (currentUser.role === 'Admin' || currentUser.role === 'Bishop'); }
+function isAdmin()                { return currentUser && currentUser.role === 'Admin'; }
+
+function setVisible(id, visible) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = visible ? '' : 'none';
+}
+
+function applyRolePermissions() {
+  // Sidebar nav
+  setVisible('nav-provinces', canViewProvinces());
+  setVisible('nav-section-province', canViewProvinces());
+  setVisible('nav-accounts', isAdmin());
+  setVisible('nav-reports', canViewReports());
+  setVisible('nav-section-analytics', canViewReports());
+  setVisible('nav-audit-log', canViewAuditLog());
+
+  // Add buttons
+  setVisible('btn-add-tx', canManageTransactions());
+  setVisible('btn-add-fund', canManageFunds());
+  setVisible('btn-add-province', canManageProvinces());
+
+  // Settings page: System/Backup is Admin only
+  setVisible('settings-system-card', isAdmin());
+}
+
+// Allow pressing Enter in the password field to submit
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('login-password').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') doLogin();
+  });
+  document.getElementById('api-base-input').value = API_BASE;
+  document.getElementById('sidebar-date').textContent = new Date().toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+
+  const roleSelect = document.getElementById('login-role');
+  const provinceField = document.getElementById('login-province-field');
+  const toggleProvinceField = () => {
+    provinceField.style.display = roleSelect.value === 'Admin' ? 'none' : 'flex';
+  };
+  roleSelect.addEventListener('change', toggleProvinceField);
+  toggleProvinceField();
+
+  // If we already have a saved token, try to go straight into the app
+  if (authToken && currentUser) {
+    enterApp();
+  }
+});
+
+// ── Helpers ────────────────────────────────────────────────
+function fmt(n) {
+  return '$' + Number(n || 0).toLocaleString('en', {minimumFractionDigits:2, maximumFractionDigits:2});
+}
+function initials(name) {
+  return (name||'').split(' ').map(w => w[0]||'').join('').toUpperCase().slice(0,2);
+}
+function showToast(msg, isError) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.toggle('error', !!isError);
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+// Tracks which record (if any) is currently being edited in each modal.
+// null means "Add new" mode; a number means "editing that record's id".
+let editing = { tx: null, fund: null, province: null };
+
+function openModal(id) {
+  document.getElementById(id).classList.add('open');
+  if (id === 'tx-modal') populateTxSelects();
+  if (id === 'account-modal') populateAccountFundSelect();
+}
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+function openAddTx() {
+  editing.tx = null;
+  document.getElementById('tx-modal-title').innerHTML = '<i class="ti ti-plus" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Add transaction';
+  ['tx-desc','tx-amount','tx-notes'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('tx-type').value = 'Giving';
+  openModal('tx-modal');
+}
+
+function openAddFund() {
+  editing.fund = null;
+  document.getElementById('fund-modal-title').innerHTML = '<i class="ti ti-wallet" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Add fund';
+  ['fund-name','fund-target','fund-desc'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('fund-color').value = '#534AB7';
+  openModal('fund-modal');
+}
+
+function openAddProvince() {
+  editing.province = null;
+  document.getElementById('province-modal-title').innerHTML = '<i class="ti ti-map-plus" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Add province';
+  ['prov-name','prov-code','province-target','province-treasurer'].forEach(id => document.getElementById(id).value = '');
+  openModal('province-modal');
+}
+
+async function editTx(id) {
+  try {
+    const rows = await api('/transactions?limit=10000');
+    const t = rows.find(r => r.id === id);
+    if (!t) { showToast('Transaction not found.', true); return; }
+
+    editing.tx = id;
+    await populateTxSelects();
+    document.getElementById('tx-modal-title').innerHTML = '<i class="ti ti-pencil" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Edit transaction';
+    document.getElementById('tx-date').value = t.date.split('T')[0];
+    document.getElementById('tx-type').value = t.type;
+    document.getElementById('tx-desc').value = t.description;
+    document.getElementById('tx-amount').value = t.amount;
+    document.getElementById('tx-fund').value = t.fund_id;
+    document.getElementById('tx-province').value = t.province_id || '';
+    document.getElementById('tx-notes').value = t.notes || '';
+    openModal('tx-modal');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function viewTxHistory(id) {
+  try {
+    const history = await api('/audit-log?entityType=transaction&entityId=' + id);
+    const body = document.getElementById('tx-history-body');
+    body.innerHTML = history.length ? history.map(h => `
+      <div style="padding:10px 0;border-bottom:0.5px solid var(--border,rgba(0,0,0,.1))">
+        <div style="font-weight:500">${h.action}</div>
+        <div style="color:var(--text-secondary);font-size:12px;margin:2px 0">
+          ${h.user_name || 'Unknown'} (${h.user_role || '—'}) · ${new Date(h.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}
+        </div>
+        ${h.details ? `<div style="font-size:12.5px">${h.details}</div>` : ''}
+      </div>
+    `).join('') : '<div class="empty-state">No history recorded for this transaction yet.</div>';
+    openModal('tx-history-modal');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+function editFund(id) {
+  const f = cache.funds.find(x => x.id === id);
+  if (!f) { showToast('Fund not found.', true); return; }
+  editing.fund = f.id;
+  document.getElementById('fund-modal-title').innerHTML = '<i class="ti ti-pencil" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Edit fund';
+  document.getElementById('fund-name').value = f.name;
+  document.getElementById('fund-target').value = f.target;
+  document.getElementById('fund-color').value = f.color;
+  document.getElementById('fund-desc').value = f.description || '';
+  openModal('fund-modal');
+}
+
+function editProvince(id) {
+  const p = cache.provinces.find(x => x.id === id);
+  if (!p) { showToast('Province not found.', true); return; }
+  editing.province = p.id;
+  document.getElementById('province-modal-title').innerHTML = '<i class="ti ti-pencil" style="color:var(--purple);vertical-align:-2px;margin-right:6px"></i>Edit province';
+  document.getElementById('prov-name').value = p.name;
+  document.getElementById('prov-code').value = p.code || '';
+  document.getElementById('province-target').value = p.target || '';
+  document.getElementById('province-treasurer').value = p.treasurer || '';
+  openModal('province-modal');
+}
+
+// ── Navigation ─────────────────────────────────────────────
+const pageTitles = {
+  dashboard: ['ti-layout-dashboard','Dashboard'],
+  transactions: ['ti-arrows-exchange','Transactions'],
+  funds: ['ti-wallet','Funds'],
+  provinces: ['ti-map','Provinces'],
+  accounts: ['ti-shield-lock','User accounts'],
+  reports: ['ti-chart-bar','Reports'],
+  auditlog: ['ti-history','Audit Log'],
+  profile: ['ti-user-circle','My Profile'],
+  settings: ['ti-settings','Settings'],
+  help: ['ti-help-circle','Help'],
+};
+
+function showPage(p, el) {
+  document.querySelectorAll('.page').forEach(x => x.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x => x.classList.remove('active'));
+  document.getElementById('page-' + p).classList.add('active');
+  if (el) el.classList.add('active');
+  const [icon, title] = pageTitles[p];
+  document.getElementById('topbar-title').innerHTML = `<i class="ti ${icon}"></i> ${title}`;
+  const renders = {
+    dashboard: renderDashboard,
+    transactions: renderTransactions,
+    funds: renderFunds,
+    provinces: renderProvinces,
+    accounts: renderAccounts,
+    reports: renderReports,
+    auditlog: renderAuditLog,
+    profile: renderProfile,
+    settings: renderSettings,
+  };
+  if (renders[p]) renders[p]();
+}
+
+// ═══════════════════════════════════════════════════════════
+// DASHBOARD
+// ═══════════════════════════════════════════════════════════
+async function renderDashboard() {
+  try {
+    const d = await api('/dashboard');
+
+    document.getElementById('dash-hero-metrics').innerHTML = `
+      <div class="hero-metric balance">
+        <div class="hero-metric-label"><i class="ti ti-scale"></i> Total Balance</div>
+        <div class="hero-metric-value">${fmt(d.netBalance)}</div>
+      </div>
+      <div class="hero-metric income">
+        <div class="hero-metric-label"><i class="ti ti-trending-up"></i> Total Income</div>
+        <div class="hero-metric-value">${fmt(d.totalIncome)}</div>
+      </div>
+      <div class="hero-metric expense">
+        <div class="hero-metric-label"><i class="ti ti-trending-down"></i> Total Expenses</div>
+        <div class="hero-metric-value">${fmt(d.totalExpense)}</div>
+      </div>
+    `;
+
+    document.getElementById('dash-metrics').innerHTML = `
+      <div class="metric">
+        <div class="metric-label"><i class="ti ti-heart"></i> Total giving</div>
+        <div class="metric-value blue">${fmt(d.giving)}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label"><i class="ti ti-users"></i> Provinces</div>
+        <div class="metric-value">${d.provinceCount}</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label"><i class="ti ti-wallet"></i> Active funds</div>
+        <div class="metric-value">${d.fundCount}</div>
+      </div>
+    `;
+
+    document.getElementById('dash-recent-body').innerHTML = d.recentTransactions.length ? d.recentTransactions.map(t => `
+      <tr>
+        <td>${t.date}</td>
+        <td>${t.description}</td>
+        <td><span class="badge ${t.type.toLowerCase()}">${t.type}</span></td>
+        <td style="font-weight:500;color:${t.type==='Expense'?'var(--coral)':'var(--teal)'}">${t.type==='Expense'?'-':'+'}${fmt(t.amount)}</td>
+      </tr>
+    `).join('') : '<tr><td colspan="4" class="empty-state">No transactions yet</td></tr>';
+
+    document.getElementById('dash-funds-list').innerHTML = d.funds.map(f => {
+      const pct = f.target > 0 ? Math.min(100, Math.round(f.balance / f.target * 100)) : 0;
+      return `
+        <div style="margin-bottom:14px">
+          <div class="progress-row"><span style="font-weight:500">${f.name}</span><span>${fmt(f.balance)}</span></div>
+          <div class="fund-bar"><div class="fund-fill" style="width:${pct}%;background:${f.color}"></div></div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:2px">${pct}% of ${fmt(f.target)} target</div>
+        </div>`;
+    }).join('');
+
+    document.getElementById('dash-provinces-list').innerHTML = d.recentProvinces.map(p => `
+      <div class="row-flex" style="margin-bottom:10px">
+        <div class="avatar">${initials(p.name)}</div>
+        <div><div style="font-size:13px;font-weight:500">${p.name}</div></div>
+      </div>
+    `).join('');
+
+    document.getElementById('dash-accounts-list').innerHTML = d.accounts.map(a => `
+      <div class="row-flex" style="margin-bottom:10px">
+        <div class="avatar" style="background:var(--amber-light);color:var(--amber)">${initials(a.name)}</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:500">${a.name}</div>
+          <div style="font-size:12px;color:var(--text-secondary)">@${a.username}</div>
+        </div>
+        <span class="role-badge role-${a.role}">${a.role}</span>
+      </div>
+    `).join('');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+
+  renderEvents();
+}
+
+async function renderEvents() {
+  try {
+    const events = await api('/events');
+    document.getElementById('dash-events-list').innerHTML = events.length ? events.map(e => `
+      <div class="row-flex" style="margin-bottom:12px;align-items:flex-start">
+        <div class="avatar" style="background:var(--blue-light);color:var(--blue)"><i class="ti ti-calendar"></i></div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:500">${e.title}</div>
+          <div style="font-size:12px;color:var(--text-secondary)">
+            ${new Date(e.event_date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}${e.event_time ? ' · ' + e.event_time : ''}${e.location ? ' · ' + e.location : ''}
+          </div>
+          ${e.description ? `<div style="font-size:12px;color:var(--text-secondary);margin-top:2px">${e.description}</div>` : ''}
+        </div>
+        <button class="btn sm" onclick="deleteEvent(${e.id})" title="Delete event">
+          <i class="ti ti-trash"></i>
+        </button>
+      </div>
+    `).join('') : '<div class="empty-state"><i class="ti ti-calendar-off"></i>No upcoming events</div>';
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function saveEvent() {
+  const title = document.getElementById('event-title').value.trim();
+  const eventDate = document.getElementById('event-date').value;
+  const eventTime = document.getElementById('event-time').value.trim();
+  const location = document.getElementById('event-location').value.trim();
+  const description = document.getElementById('event-description').value.trim();
+
+  if (!title) { showToast('Please enter an event title.', true); return; }
+  if (!eventDate) { showToast('Please choose a date.', true); return; }
+
+  try {
+    await api('/events', {
+      method: 'POST',
+      body: JSON.stringify({ title, eventDate, eventTime, location, description }),
+    });
+    closeModal('event-modal');
+    ['event-title','event-date','event-time','event-location','event-description'].forEach(id => document.getElementById(id).value = '');
+    renderEvents();
+    showToast('Event added!');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function deleteEvent(id) {
+  if (!confirm('Delete this event?')) return;
+  try {
+    await api('/events/' + id, { method: 'DELETE' });
+    renderEvents();
+    showToast('Event deleted.');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// TRANSACTIONS
+// ═══════════════════════════════════════════════════════════
+async function renderTransactions() {
+  const search = document.getElementById('tx-search')?.value || '';
+  const type = document.getElementById('tx-type-filter')?.value || '';
+  const fundId = document.getElementById('tx-fund-filter')?.value || '';
+
+  try {
+    if (cache.funds.length === 0) cache.funds = await api('/funds');
+    const ff = document.getElementById('tx-fund-filter');
+    if (ff && ff.options.length <= 1) {
+      cache.funds.forEach(f => {
+        const o = document.createElement('option');
+        o.value = f.id; o.textContent = f.name;
+        ff.appendChild(o);
+      });
+    }
+
+    const params = new URLSearchParams();
+    if (search) params.set('search', search);
+    if (type) params.set('type', type);
+    if (fundId) params.set('fundId', fundId);
+
+    const rows = await api('/transactions?' + params.toString());
+    cache.transactions = rows;
+
+    document.getElementById('tx-body').innerHTML = rows.length ? rows.map(t => `
+      <tr>
+        <td>${t.date.split('T')[0]}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${new Date(t.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+        <td>${t.description}</td>
+        <td><span class="badge ${t.type.toLowerCase()}">${t.type}</span></td>
+        <td>${t.fund_name || '—'}</td>
+        <td style="font-weight:500;color:${t.type==='Expense'?'var(--coral)':'var(--teal)'}">${t.type==='Expense'?'- ':'+ '}${fmt(t.amount)}</td>
+        <td style="font-size:12px">${t.province_name || '—'}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${t.recorded_by_name || '—'}</td>
+        <td>
+          <button class="btn sm" onclick="viewTxHistory(${t.id})" title="View edit history">
+            <i class="ti ti-info-circle"></i>
+          </button>
+        </td>
+        <td>
+          ${canManageTransactions() ? `
+          <button class="btn sm" onclick="editTx(${t.id})" title="Edit">
+            <i class="ti ti-pencil"></i>
+          </button>
+          <button class="btn sm" onclick="deleteTx(${t.id})" title="Delete" style="margin-left:4px">
+            <i class="ti ti-trash"></i>
+          </button>` : ''}
+        </td>
+      </tr>
+    `).join('') : '<tr><td colspan="10" class="empty-state"><i class="ti ti-file-off"></i>No transactions found</td></tr>';
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function populateTxSelects() {
+  try {
+    if (cache.funds.length === 0) cache.funds = await api('/funds');
+    // Use the lightweight endpoint here (not /provinces) — Treasurers can tag
+    // transactions with a province even though they can't view province reports.
+    const provincesLite = await api('/provinces/lite');
+
+    const fs = document.getElementById('tx-fund');
+    fs.innerHTML = cache.funds.map(f => `<option value="${f.id}">${f.name}</option>`).join('');
+
+    const ms = document.getElementById('tx-province');
+    ms.innerHTML = `<option value="">— Anonymous —</option>` + provincesLite.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+
+    document.getElementById('tx-by').value = currentUser ? currentUser.name : '';
+    document.getElementById('tx-date').value = new Date().toISOString().split('T')[0];
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function saveTx() {
+  const date = document.getElementById('tx-date').value;
+  const description = document.getElementById('tx-desc').value.trim();
+  const type = document.getElementById('tx-type').value;
+  const fundId = parseInt(document.getElementById('tx-fund').value);
+  const amount = parseFloat(document.getElementById('tx-amount').value);
+  const provinceRaw = document.getElementById('tx-province').value;
+  const provinceId = provinceRaw ? parseInt(provinceRaw) : null;
+  const notes = document.getElementById('tx-notes').value;
+
+  if (!description) { showToast('Please enter a description.', true); return; }
+  if (!amount || isNaN(amount) || amount <= 0) { showToast('Please enter a valid amount.', true); return; }
+
+  try {
+    if (editing.tx) {
+      await api('/transactions/' + editing.tx, {
+        method: 'PUT',
+        body: JSON.stringify({ date, description, type, fundId, amount, provinceId, notes }),
+      });
+      showToast('Transaction updated!');
+    } else {
+      await api('/transactions', {
+        method: 'POST',
+        body: JSON.stringify({ date, description, type, fundId, amount, provinceId, notes }),
+      });
+      showToast('Transaction saved!');
+    }
+    editing.tx = null;
+    closeModal('tx-modal');
+    ['tx-desc','tx-amount','tx-notes'].forEach(id => document.getElementById(id).value = '');
+    renderTransactions();
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function deleteTx(id) {
+  if (!confirm('Delete this transaction?')) return;
+  try {
+    await api('/transactions/' + id, { method: 'DELETE' });
+    renderTransactions();
+    showToast('Transaction deleted.');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// FUNDS
+// ═══════════════════════════════════════════════════════════
+async function renderFunds() {
+  try {
+    const funds = await api('/funds');
+    cache.funds = funds;
+    document.getElementById('funds-grid').innerHTML = funds.map(f => {
+      const pct = f.target > 0 ? Math.min(100, Math.round(f.balance / f.target * 100)) : 0;
+      return `
+        <div class="fund-card">
+          <div class="fund-card-top">
+            <div><div class="fund-card-name">${f.name}</div></div>
+            <div style="display:flex;gap:4px">
+              ${canManageFunds() ? `
+              <button class="btn sm" onclick="editFund(${f.id})" title="Edit fund">
+                <i class="ti ti-pencil"></i>
+              </button>` : ''}
+              ${canDeleteFund() ? `
+              <button class="btn sm danger" onclick="deleteFund(${f.id})" title="Delete fund">
+                <i class="ti ti-trash"></i>
+              </button>` : ''}
+            </div>
+          </div>
+          <div class="fund-card-desc">${f.description || 'No description'}</div>
+          <div class="fund-card-amount" style="color:${f.color}">${fmt(f.balance)}</div>
+          <div class="fund-card-sub">of ${fmt(f.target)} target · ${pct}%</div>
+          <div class="fund-bar"><div class="fund-fill" style="width:${pct}%;background:${f.color}"></div></div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:6px">
+            ${f.transaction_count} transactions
+          </div>
+        </div>`;
+    }).join('');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function saveFund() {
+  const name = document.getElementById('fund-name').value.trim();
+  const target = parseFloat(document.getElementById('fund-target').value) || 0;
+  const color = document.getElementById('fund-color').value;
+  const description = document.getElementById('fund-desc').value.trim();
+  if (!name) { showToast('Please enter a fund name.', true); return; }
+
+  try {
+    if (editing.fund) {
+      await api('/funds/' + editing.fund, { method: 'PUT', body: JSON.stringify({ name, target, color, description }) });
+      showToast('Fund updated!');
+    } else {
+      await api('/funds', { method: 'POST', body: JSON.stringify({ name, target, color, description }) });
+      showToast('Fund created!');
+    }
+    editing.fund = null;
+    closeModal('fund-modal');
+    ['fund-name','fund-target','fund-desc'].forEach(id => document.getElementById(id).value = '');
+    cache.funds = [];
+    renderFunds();
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function deleteFund(id) {
+  if (!confirm('Delete this fund?')) return;
+  try {
+    await api('/funds/' + id, { method: 'DELETE' });
+    cache.funds = [];
+    renderFunds();
+    showToast('Fund deleted.');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// PROVINCES
+// ═══════════════════════════════════════════════════════════
+async function renderProvinces() {
+  const q = (document.getElementById('prov-search')?.value || '').toLowerCase();
+  try {
+    const provinces = await api('/provinces');
+    cache.provinces = provinces;
+    const rows = provinces.filter(p => !q || p.name.toLowerCase().includes(q));
+
+    document.getElementById('provinces-body').innerHTML = rows.length ? rows.map(p => {
+      const pct = p.target > 0 ? Math.min(100, Math.round(p.total_given / p.target * 100)) : 0;
+      return `
+        <tr>
+          <td><div class="row-flex"><div class="avatar">${initials(p.name)}</div>${p.name}</div></td>
+          <td><span class="badge" style="background:var(--blue-light);color:var(--blue)">${p.code || '—'}</span></td>
+          <td style="font-weight:500;color:var(--teal)">${fmt(p.total_given)}</td>
+          <td style="font-size:13px;color:var(--text-secondary)">${p.target ? fmt(p.target) : '—'}</td>
+          <td style="font-size:12px;color:var(--text-secondary)">${p.target ? pct + '%' : '—'}</td>
+          <td>
+            ${canManageProvinces() ? `
+            <button class="btn sm" onclick="editProvince(${p.id})" title="Edit province">
+              <i class="ti ti-pencil"></i>
+            </button>
+            <button class="btn sm" onclick="deleteProvince(${p.id})" title="Remove province" style="margin-left:4px">
+              <i class="ti ti-trash"></i>
+            </button>` : ''}
+          </td>
+        </tr>`;
+    }).join('') : '<tr><td colspan="6" class="empty-state"><i class="ti ti-building-bank"></i>No provinces found</td></tr>';
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function saveProvince() {
+  const name = document.getElementById('prov-name').value.trim();
+  const code = document.getElementById('prov-code').value.trim();
+  const target = parseFloat(document.getElementById('province-target').value) || 0;
+  const treasurer = document.getElementById('province-treasurer').value.trim();
+  if (!name) { showToast('Please enter province name.', true); return; }
+
+  try {
+    if (editing.province) {
+      await api('/provinces/' + editing.province, { method: 'PUT', body: JSON.stringify({ name, code, target, treasurer }) });
+      showToast('Province updated!');
+    } else {
+      await api('/provinces', { method: 'POST', body: JSON.stringify({ name, code, target, treasurer }) });
+      showToast('Province added!');
+    }
+    editing.province = null;
+    closeModal('province-modal');
+    ['prov-name','prov-code','province-target','province-treasurer'].forEach(id => document.getElementById(id).value = '');
+    cache.provinces = [];
+    renderProvinces();
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function deleteProvince(id) {
+  if (!confirm('Remove this province?')) return;
+  try {
+    await api('/provinces/' + id, { method: 'DELETE' });
+    cache.provinces = [];
+    renderProvinces();
+    showToast('Province removed.');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// ACCOUNTS
+// ═══════════════════════════════════════════════════════════
+async function renderAccounts() {
+  try {
+    const accounts = await api('/accounts');
+    cache.accounts = accounts;
+    document.getElementById('accounts-body').innerHTML = accounts.map(a => `
+      <tr>
+        <td><div class="row-flex">
+          <div class="avatar" style="background:var(--amber-light);color:var(--amber)">${initials(a.name)}</div>
+          ${a.name}
+        </div></td>
+        <td style="font-size:13px;color:var(--text-secondary)">@${a.username}</td>
+        <td><span class="role-badge role-${a.role}">${a.role}</span></td>
+        <td style="font-size:12px;color:var(--text-secondary)">${a.province_name ? a.province_name + ' (' + a.province_code + ')' : '—'}</td>
+        <td style="font-size:13px">${a.fund_access}</td>
+        <td><span class="badge ${a.active?'active':'inactive'}">${a.active?'Active':'Inactive'}</span></td>
+        <td>
+          <button class="btn sm" onclick="toggleAccount(${a.id})" title="${a.active?'Deactivate':'Activate'}">
+            <i class="ti ti-${a.active?'lock':'lock-open'}"></i>
+          </button>
+          <button class="btn sm" onclick="resetAccountPassword(${a.id}, '${a.name.replace(/'/g, "\\'")}')" title="Reset password" style="margin-left:4px">
+            <i class="ti ti-key"></i>
+          </button>
+          <button class="btn sm" onclick="deleteAccount(${a.id})" title="Delete" style="margin-left:4px">
+            <i class="ti ti-trash"></i>
+          </button>
+        </td>
+      </tr>
+    `).join('');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function populateAccountFundSelect() {
+  try {
+    if (cache.funds.length === 0) cache.funds = await api('/funds');
+    const s = document.getElementById('acc-fund');
+    s.innerHTML = `<option value="All">All funds</option>` + cache.funds.map(f => `<option>${f.name}</option>`).join('');
+
+    if (cache.provinces.length === 0) cache.provinces = await api('/provinces');
+    const ps = document.getElementById('acc-province');
+    ps.innerHTML = cache.provinces.map(p => `<option value="${p.id}">${p.name} (code: ${p.code})</option>`).join('');
+
+    toggleAccProvinceField();
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+function toggleAccProvinceField() {
+  const role = document.getElementById('acc-role').value;
+  setVisible('acc-province-field', role !== 'Admin');
+}
+
+async function saveAccount() {
+  const name = document.getElementById('acc-name').value.trim();
+  const username = document.getElementById('acc-user').value.trim();
+  const role = document.getElementById('acc-role').value;
+  const fundAccess = document.getElementById('acc-fund').value;
+  const password = document.getElementById('acc-pass').value;
+  const provinceId = role !== 'Admin' ? parseInt(document.getElementById('acc-province').value) || null : null;
+  if (!name || !username) { showToast('Please enter name and username.', true); return; }
+  if (!password || password.length < 6) { showToast('Password must be at least 6 characters.', true); return; }
+  if (role !== 'Admin' && !provinceId) { showToast('Please choose a province for this account.', true); return; }
+
+  try {
+    await api('/accounts', { method: 'POST', body: JSON.stringify({ name, username, password, role, fundAccess, provinceId }) });
+    closeModal('account-modal');
+    ['acc-name','acc-user','acc-pass'].forEach(id => document.getElementById(id).value = '');
+    renderAccounts();
+    showToast('Account created!');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function toggleAccount(id) {
+  try {
+    await api('/accounts/' + id + '/toggle-active', { method: 'PUT' });
+    renderAccounts();
+    showToast('Account status updated.');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function deleteAccount(id) {
+  if (!confirm('Delete this account?')) return;
+  try {
+    await api('/accounts/' + id, { method: 'DELETE' });
+    renderAccounts();
+    showToast('Account deleted.');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function resetAccountPassword(id, name) {
+  const newPassword = prompt(`Enter a new password for ${name} (min 6 characters):`);
+  if (newPassword === null) return; // cancelled
+  if (newPassword.length < 6) { showToast('Password must be at least 6 characters.', true); return; }
+
+  try {
+    await api('/accounts/' + id + '/password', {
+      method: 'PUT',
+      body: JSON.stringify({ password: newPassword }),
+    });
+    showToast(`Password reset for ${name}.`);
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// REPORTS
+// ═══════════════════════════════════════════════════════════
+let repChart = null;
+
+async function renderReports() {
+  try {
+    const summary = await api('/reports/summary');
+
+    document.getElementById('rep-metrics').innerHTML = `
+      <div class="metric"><div class="metric-label"><i class="ti ti-trending-up"></i> Total income</div><div class="metric-value green">${fmt(summary.total_income)}</div></div>
+      <div class="metric"><div class="metric-label"><i class="ti ti-trending-down"></i> Total expenses</div><div class="metric-value red">${fmt(summary.total_expense)}</div></div>
+      <div class="metric"><div class="metric-label"><i class="ti ti-scale"></i> Net surplus</div><div class="metric-value purple">${fmt(summary.total_income - summary.total_expense)}</div></div>
+      <div class="metric"><div class="metric-label"><i class="ti ti-heart"></i> Giving</div><div class="metric-value">${fmt(summary.giving)}</div></div>
+    `;
+
+    setTimeout(() => {
+      const ctx = document.getElementById('rep-chart');
+      if (!ctx) return;
+      if (repChart) { repChart.destroy(); repChart = null; }
+      repChart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['Giving','Fundraising'],
+          datasets: [{
+            data: [summary.giving, summary.fundraising],
+            backgroundColor: ['#534AB7','#185FA5'],
+            borderWidth: 0
+          }]
+        },
+        options: { plugins: { legend: { display: false } }, cutout: '65%' }
+      });
+    }, 100);
+
+    document.getElementById('rep-legend').innerHTML = [
+      {label:'Giving', val:summary.giving, col:'#534AB7'},
+      {label:'Fundraising', val:summary.fundraising, col:'#185FA5'},
+    ].map(x => `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${x.col}"></div>
+        <span>${x.label}</span>
+        <span style="margin-left:auto;font-weight:500">${fmt(x.val)}</span>
+      </div>
+    `).join('');
+
+    document.getElementById('rep-funds-list').innerHTML = summary.funds.map(f => {
+      const pct = f.target > 0 ? Math.min(100, Math.round(f.balance / f.target * 100)) : 0;
+      return `
+        <div style="margin-bottom:16px">
+          <div class="progress-row"><span style="font-weight:500">${f.name}</span><span>${fmt(f.balance)}</span></div>
+          <div class="fund-bar"><div class="fund-fill" style="width:${pct}%;background:${f.color}"></div></div>
+          <div style="font-size:11px;color:var(--text-secondary);margin-top:3px">${pct}% funded · target ${fmt(f.target)}</div>
+        </div>`;
+    }).join('');
+
+    const contributions = await api('/reports/contributions');
+    document.getElementById('contrib-body').innerHTML = contributions.map(p => `
+      <tr>
+        <td><div class="row-flex"><div class="avatar">${initials(p.name)}</div>${p.name}</div></td>
+        <td>${fmt(p.giving)}</td><td>${fmt(p.fundraising)}</td>
+        <td style="font-weight:600">${fmt(p.total)}</td>
+      </tr>
+    `).join('');
+
+    const expenses = await api('/reports/expenses');
+    document.getElementById('exp-body').innerHTML = expenses.length ? expenses.map(t => `
+      <tr>
+        <td>${t.date}</td><td>${t.description}</td>
+        <td>${t.fund_name || '—'}</td>
+        <td style="color:var(--coral);font-weight:500">${fmt(t.amount)}</td>
+        <td style="font-size:12px">${t.recorded_by_name || '—'}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${t.notes||'—'}</td>
+      </tr>
+    `).join('') : '<tr><td colspan="6" class="empty-state">No expenses recorded</td></tr>';
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+function showReportTab(tab, el) {
+  ['summary','contributions','expenses'].forEach(t => {
+    const target = document.getElementById('report-' + t);
+    if (target) target.style.display = 'none';
+  });
+  const target = document.getElementById('report-' + tab);
+  if (target) target.style.display = 'block';
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════════════
+// AUDIT LOG
+// ═══════════════════════════════════════════════════════════
+async function renderAuditLog() {
+  const q = (document.getElementById('audit-search')?.value || '').toLowerCase();
+  try {
+    const all = await api('/audit-log');
+    const rows = all.filter(r => {
+      if (!q) return true;
+      return (r.action||'').toLowerCase().includes(q) ||
+             (r.user_name||'').toLowerCase().includes(q) ||
+             (r.details||'').toLowerCase().includes(q) ||
+             (r.user_role||'').toLowerCase().includes(q);
+    });
+
+    document.getElementById('auditlog-body').innerHTML = rows.length ? rows.map(r => `
+      <tr>
+        <td style="font-size:12px;white-space:nowrap">${new Date(r.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+        <td style="font-size:12px">${r.user_name || 'System'}${r.user_role ? ' <span class="role-badge role-'+r.user_role+'">'+r.user_role+'</span>' : ''}</td>
+        <td style="font-size:12px;font-weight:500">${r.action}</td>
+        <td style="font-size:12px;color:var(--text-secondary)">${r.details || '—'}</td>
+      </tr>
+    `).join('') : '<tr><td colspan="4" class="empty-state"><i class="ti ti-history"></i>No activity recorded yet</td></tr>';
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// SETTINGS
+// ═══════════════════════════════════════════════════════════
+async function renderSettings() {
+  setVisible('settings-org-card', isAdmin());
+  setVisible('settings-system-card', isAdmin());
+
+  if (isAdmin()) {
+    try {
+      const settings = await api('/settings');
+      document.getElementById('settings-org-name').value = settings.org_name || '';
+      document.getElementById('settings-currency').value = settings.currency_symbol || '$';
+    } catch (err) {
+      showToast(err.message, true);
+    }
+  }
+}
+
+function renderProfile() {
+  document.getElementById('profile-name').textContent = currentUser.name;
+  document.getElementById('profile-role').textContent = currentUser.role;
+  document.getElementById('profile-province').textContent = currentUser.provinceName ? ' · ' + currentUser.provinceName : '';
+}
+
+async function downloadBackup() {
+  try {
+    const backup = await api('/backup/export');
+    const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `aac-backup-${new Date().toISOString().split('T')[0]}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Backup downloaded!');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function restoreBackup(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  event.target.value = ''; // reset so choosing the same file again still fires 'change'
+
+  if (!confirm('Restoring will REPLACE all current funds, provinces, transactions, and events with the contents of this file. This cannot be undone. Continue?')) return;
+
+  try {
+    const text = await file.text();
+    const backup = JSON.parse(text);
+    const result = await api('/backup/restore', {
+      method: 'POST',
+      body: JSON.stringify(backup),
+    });
+    showToast(`Restored: ${result.restored.transactions} transactions, ${result.restored.funds} funds, ${result.restored.provinces} provinces.`);
+    cache = { funds: [], provinces: [], accounts: [], transactions: [] };
+  } catch (err) {
+    showToast(err.message || 'Could not restore — check the file is a valid backup.', true);
+  }
+}
+
+async function changeMyPassword() {
+  const currentPassword = document.getElementById('settings-current-pw').value;
+  const newPassword = document.getElementById('settings-new-pw').value;
+  const confirmPassword = document.getElementById('settings-confirm-pw').value;
+  const errBox = document.getElementById('settings-pw-error');
+  errBox.classList.remove('show');
+
+  if (!currentPassword || !newPassword) {
+    errBox.textContent = 'Please fill in both password fields.';
+    errBox.classList.add('show');
+    return;
+  }
+  if (newPassword.length < 6) {
+    errBox.textContent = 'New password must be at least 6 characters.';
+    errBox.classList.add('show');
+    return;
+  }
+  if (newPassword !== confirmPassword) {
+    errBox.textContent = 'New password and confirmation do not match.';
+    errBox.classList.add('show');
+    return;
+  }
+
+  try {
+    await api('/auth/change-password', {
+      method: 'PUT',
+      body: JSON.stringify({ currentPassword, newPassword }),
+    });
+    ['settings-current-pw','settings-new-pw','settings-confirm-pw'].forEach(id => document.getElementById(id).value = '');
+    showToast('Password updated!');
+  } catch (err) {
+    errBox.textContent = err.message;
+    errBox.classList.add('show');
+  }
+}
+
+async function saveOrgSettings() {
+  const org_name = document.getElementById('settings-org-name').value.trim();
+  const currency_symbol = document.getElementById('settings-currency').value.trim();
+  if (!org_name) { showToast('Organization name cannot be empty.', true); return; }
+
+  try {
+    await api('/settings', {
+      method: 'PUT',
+      body: JSON.stringify({ org_name, currency_symbol }),
+    });
+    document.querySelector('.logo-text').textContent = org_name;
+    showToast('Organization settings saved!');
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+async function exportTransactionsCSV() {
+  try {
+    const rows = await api('/transactions?limit=10000');
+    if (!rows.length) { showToast('No transactions to export.', true); return; }
+
+    const headers = ['Date','Description','Type','Fund','Amount','Province','Recorded by','Notes'];
+    const csvRows = [headers.join(',')];
+    rows.forEach(t => {
+      const line = [
+        t.date,
+        `"${(t.description||'').replace(/"/g,'""')}"`,
+        t.type,
+        `"${(t.fund_name||'').replace(/"/g,'""')}"`,
+        t.amount,
+        `"${(t.province_name||'').replace(/"/g,'""')}"`,
+        `"${(t.recorded_by_name||'').replace(/"/g,'""')}"`,
+        `"${(t.notes||'').replace(/"/g,'""')}"`,
+      ];
+      csvRows.push(line.join(','));
+    });
+
+    const blob = new Blob([csvRows.join('\n')], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `transactions-${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('CSV downloaded!');
+
+    try {
+      await api('/audit-log/log-export', { method: 'POST', body: JSON.stringify({ count: rows.length }) });
+    } catch (e) {
+      // Non-critical — the export itself succeeded even if logging it failed
+    }
+  } catch (err) {
+    showToast(err.message, true);
+  }
+}
+
+// ── Modal click-outside-to-close ────────────────────────────
+document.querySelectorAll('.modal-overlay').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
+});
+</script>
+</body>
+</html>
