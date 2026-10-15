@@ -391,10 +391,15 @@
     .two-col, .form-grid { grid-template-columns: 1fr; }
     .form-group.full { grid-column: span 1; }
   }
+  #mobileMenuBtn { display: none; }
+@media (max-width: 768px) {
+  #mobileMenuBtn { display: block !important; }
+  .sidebar.open { transform: translateX(0) !important; }
+}
 </style>
 </head>
 <body>
-
+<button id="mobileMenuBtn" style="position:fixed; top:10px; left:10px; z-index:10000; background:#908d9b; color:white; border:none; padding:10px 14px; border-radius:8px; font-size:20px; display:none;">☰</button>
 <!-- ── LOGIN SCREEN ─────────────────────────────────────── -->
 <div class="login-screen" id="login-screen">
   <div class="login-box">
@@ -2160,6 +2165,18 @@ async function exportTransactionsCSV() {
 document.querySelectorAll('.modal-overlay').forEach(m => {
   m.addEventListener('click', e => { if (e.target === m) m.classList.remove('open'); });
 });
+// Mobile menu toggle
+const menuBtn = document.getElementById('mobileMenuBtn');
+const sidebar = document.querySelector('.sidebar');
+if(menuBtn && sidebar){
+  menuBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+  });
+  // Close when clicking main content
+  document.querySelector('.main-content')?.addEventListener('click', () => {
+    sidebar.classList.remove('open');
+  });
+}
 </script>
 </body>
 </html>
