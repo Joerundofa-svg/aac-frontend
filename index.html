@@ -445,7 +445,7 @@
 <div class="app-shell" id="app-shell">
 
   <!-- Sidebar -->
-  <nav class="sidebar" role="navigation" aria-label="Main navigation">
+  <nav class="sidebar" role="navigation" aria-label="Main navigation" style="display:flex; flex-direction:column; height:100vh; height:100dvh;"></nav>
     <div class="sidebar-header">
       <div class="sidebar-logo">
         <div class="logo-icon"><i class="ti ti-building-church"></i></div>
@@ -455,7 +455,7 @@
         </div>
       </div>
     </div>
-    <div class="sidebar-nav">
+    <div class="sidebar-nav" style="flex:1; overflow-y:auto;"></div>
       <div class="nav-section-label">Overview</div>
       <div class="nav-item active" onclick="showPage('dashboard',this)">
         <i class="ti ti-layout-dashboard"></i> Dashboard
