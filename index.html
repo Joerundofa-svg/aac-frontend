@@ -399,32 +399,9 @@
   #mobileMenuBtn { display: block !important; }
   .sidebar.open { transform: translateX(0) !important; }
 }
-/* --- FIX SIDEBAR SCROLL - fits both phone & laptop --- */
-.app-shell {
-  height: 100vh;
-  height: 100dvh;
-  overflow: hidden;
-}
-.sidebar {
-  display: flex !important;
-  flex-direction: column !important;
-  height: 100vh !important;
-  height: 100dvh !important;
-  overflow: hidden !important;
-}
 .sidebar-nav {
-  flex: 1 !important;
-  overflow-y: auto !important;
-  -webkit-overflow-scrolling: touch;
-}
-.sidebar-nav::-webkit-scrollbar {
-  width: 5px;
-}
-.sidebar-footer,
-.sidebar .nav-bottom,
-.sidebar [class*="bottom"] {
-  flex-shrink: 0 !important;
-  margin-top: auto !important;
+  overflow-y: auto;
+  max-height: 55vh;
 }
 </style>
 </head>
