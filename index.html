@@ -399,6 +399,33 @@
   #mobileMenuBtn { display: block !important; }
   .sidebar.open { transform: translateX(0) !important; }
 }
+/* --- FIX SIDEBAR SCROLL - fits both phone & laptop --- */
+.app-shell {
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+.sidebar {
+  display: flex !important;
+  flex-direction: column !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  overflow: hidden !important;
+}
+.sidebar-nav {
+  flex: 1 !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+.sidebar-nav::-webkit-scrollbar {
+  width: 5px;
+}
+.sidebar-footer,
+.sidebar .nav-bottom,
+.sidebar [class*="bottom"] {
+  flex-shrink: 0 !important;
+  margin-top: auto !important;
+}
 </style>
 </head>
 <body>
@@ -445,7 +472,7 @@
 <div class="app-shell" id="app-shell">
 
   <!-- Sidebar -->
-  <nav class="sidebar" role="navigation" aria-label="Main navigation" style="display:flex; flex-direction:column; height:100vh; height:100dvh;"></nav>
+  <n class="sidebar" role="navigation" aria-label="Main navigation">
     <div class="sidebar-header">
       <div class="sidebar-logo">
         <div class="logo-icon"><i class="ti ti-building-church"></i></div>
@@ -455,7 +482,7 @@
         </div>
       </div>
     </div>
-    <div class="sidebar-nav" style="flex:1; overflow-y:auto;"></div>
+    <div class="sidebar-nav">
       <div class="nav-section-label">Overview</div>
       <div class="nav-item active" onclick="showPage('dashboard',this)">
         <i class="ti ti-layout-dashboard"></i> Dashboard
